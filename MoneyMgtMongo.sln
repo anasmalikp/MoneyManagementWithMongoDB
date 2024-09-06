@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35004.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyMgtMongo", "MoneyMgtMongo\MoneyMgtMongo.csproj", "{9F55C969-A88C-4A8B-AD6F-E799A19C128C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F55C969-A88C-4A8B-AD6F-E799A19C128C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F55C969-A88C-4A8B-AD6F-E799A19C128C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F55C969-A88C-4A8B-AD6F-E799A19C128C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F55C969-A88C-4A8B-AD6F-E799A19C128C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {79872BA4-0C6C-4A64-84C9-555216AB9C98}
+	EndGlobalSection
+EndGlobal
