@@ -13,9 +13,13 @@ namespace MoneyMgtMongo.Models
         public string? email { get; set; }
         [BsonElement("password"), BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public string? Password { get; set; }
+        [BsonElement("customAccounts")]
+        public List<Accounts>? customAccounts { get; set; }
         [BsonElement("transactiondetails")]
         public List<Transactions>? transactiondetails { get; set; }
-        [BsonElement("walletBalance"), BsonRepresentation(MongoDB.Bson.BsonType.Int32)]
-        public int? walletBalance { get; set; }
+        [BsonElement("cashBalance"), BsonRepresentation(MongoDB.Bson.BsonType.Int32)]
+        public int? cashBalance { get; set; }
+        [BsonElement("bankBalance"), BsonRepresentation(MongoDB.Bson.BsonType.Int32)]
+        public int? bankBalance { get; set; }
     }
 }

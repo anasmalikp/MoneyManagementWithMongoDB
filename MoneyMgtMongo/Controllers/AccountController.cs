@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyMgtMongo.Interfaces;
+using MoneyMgtMongo.Models;
 
 namespace MoneyMgtMongo.Controllers
 {
@@ -15,9 +17,10 @@ namespace MoneyMgtMongo.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> NewAccount(string accountName, int type)
+        [Authorize]
+        public async Task<IActionResult> NewAccount(Accounts acc)
         {
-            var result = await services.AddNewAccount(accountName, type);
+            var result = await services.AddNewAccount(acc);
             if (result)
             {
                 return Ok("Account Added");
@@ -26,6 +29,7 @@ namespace MoneyMgtMongo.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> AllAccounts()
         {
             var response = await services.GetAllAccounts();

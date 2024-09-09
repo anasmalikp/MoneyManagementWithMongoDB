@@ -7,8 +7,8 @@ namespace MoneyMgtMongo.Models
         [BsonId]
         [BsonElement("id"), BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string? id { get; set; }
-        [BsonElement("transactionName"), BsonRepresentation(MongoDB.Bson.BsonType.String)]
-        public string? transactonName { get; set; }
+        [BsonElement("accountId"), BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        public string? AccountId { get; set; }
         [BsonElement("transactionTime"), BsonRepresentation(MongoDB.Bson.BsonType.DateTime)]
         public DateTime? transactionTime { get; set; }
         [BsonElement("amount"), BsonRepresentation(MongoDB.Bson.BsonType.Int32)]
