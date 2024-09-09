@@ -88,7 +88,7 @@ namespace MoneyMgtMongo.Services
                         var newCash = user.cashBalance + trans.amount;
                         var update = Builders<Users>.Update
                             .Push(x => x.transactiondetails, trans)
-                            .Set(x => x.bankBalance, newCash);
+                            .Set(x => x.cashBalance, newCash);
                         await users.UpdateOneAsync(x => x.id == creds.userid, update);
                     }
                 }
