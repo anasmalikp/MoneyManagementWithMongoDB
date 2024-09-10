@@ -16,9 +16,9 @@ namespace MoneyMgtMongo.Controllers
         }
 
         [HttpPost("registerusers")]
-        public async Task<IActionResult> NewUser(Users user)
+        public async Task<IActionResult> NewUser(RegisterDto register)
         {
-            var response = await services.Register(user);
+            var response = await services.Register(register);
             if (response)
             {
                 return Ok("User Added");
@@ -26,7 +26,7 @@ namespace MoneyMgtMongo.Controllers
             return BadRequest("something went wrong");
         }
         [HttpPost("loginusers")]
-        public async Task<IActionResult> UserLogin(Users user)
+        public async Task<IActionResult> UserLogin(LoginDto user)
         {
             var response = await services.Login(user);
             if(response == null)

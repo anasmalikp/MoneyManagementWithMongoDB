@@ -33,10 +33,16 @@ namespace MoneyMgtMongo.Services
             }
         }
 
-        public async Task<bool> AddNewTransaction(Transactions trans, bool isBank)
+        public async Task<bool> AddNewTransaction(TransactionDto tranasction, bool isBank)
         {
             try
             {
+                Transactions trans = new Transactions
+                {
+                    AccountId = tranasction.accountId,
+                    transactionTime = tranasction.transactionTime,
+                    amount = tranasction.amount,
+                };
                 trans.id = ObjectId.GenerateNewId().ToString();
                 var user = await users.Find(x => x.id == creds.userid).FirstOrDefaultAsync();
                 if (user == null)
@@ -44,6 +50,13 @@ namespace MoneyMgtMongo.Services
                     logger.LogError("user not found");
                     return false;
                 }
+                var account = user.customAccounts.Find(x => x.id == trans.AccountId);
+                if(account == null)
+                {
+                    logger.LogError($"{trans.AccountId} not found");
+                    return false;
+                }
+                trans.transactionType = account.TransactionType;
                 if (isBank)
                 {
                     if (trans.transactionType == 1)

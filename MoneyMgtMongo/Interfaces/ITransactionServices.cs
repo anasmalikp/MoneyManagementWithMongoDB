@@ -5,6 +5,6 @@ namespace MoneyMgtMongo.Interfaces
     public interface ITransactionServices
     {
         Task<IEnumerable<Transactions>> GetAllTransactions();
-        Task<bool> AddNewTransaction(Transactions trans, bool isBank);
+        Task<bool> AddNewTransaction(TransactionDto tranasction, bool isBank);
     }
 }

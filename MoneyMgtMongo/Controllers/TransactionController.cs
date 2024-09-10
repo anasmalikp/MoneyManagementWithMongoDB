@@ -31,7 +31,7 @@ namespace MoneyMgtMongo.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddTransaction(Transactions trans, bool isBank)
+        public async Task<IActionResult> AddTransaction(TransactionDto trans, bool isBank)
         {
             var response = await services.AddNewTransaction(trans, isBank);
             if (response)

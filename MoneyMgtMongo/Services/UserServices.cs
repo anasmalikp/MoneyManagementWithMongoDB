@@ -22,10 +22,16 @@ namespace MoneyMgtMongo.Services
             this.logger = logger;
         }
 
-        public async Task<bool> Register(Users user)
+        public async Task<bool> Register(RegisterDto register)
         {
             try
             {
+                Users user = new Users
+                {
+                    email = register.email,
+                    username = register.userName,
+                    Password = register.password,
+                };
                 var filter = Builders<Users>.Filter.Eq(x => x.email, user.email);
                 var existingUser = await users.Find(filter).FirstOrDefaultAsync();
                 if(existingUser != null)
@@ -47,18 +53,19 @@ namespace MoneyMgtMongo.Services
             }
         }
 
-        public async Task<string> Login(Users user)
+        public async Task<string> Login(LoginDto creds)
         {
             try
             {
-                var filter = Builders<Users>.Filter.Eq(x => x.email, user.email);
+
+                var filter = Builders<Users>.Filter.Eq(x => x.email, creds.email);
                 var isExist = await users.Find(filter).FirstOrDefaultAsync();
                 if(isExist == null)
                 {
                     logger.LogError("Email not found. please Register first");
                     return null;
                 }
-                var isVerified = PasswordHasher.VerifyPassword(isExist.Password, user.Password);
+                var isVerified = PasswordHasher.VerifyPassword(isExist.Password, creds.password);
                 if(isVerified)
                 {
                     return GetToken(isExist);
