@@ -1,4 +1,5 @@
-﻿using MoneyMgtMongo.DB;
+﻿using Microsoft.AspNetCore.DataProtection;
+using MoneyMgtMongo.DB;
 using MoneyMgtMongo.Interfaces;
 using MoneyMgtMongo.Models;
 using MongoDB.Bson;
@@ -11,11 +12,13 @@ namespace MoneyMgtMongo.Services
         private readonly IMongoCollection<Users> users;
         private readonly ILogger<TransactionServices> logger;
         private readonly UserCreds creds;
-        public TransactionServices(MongoDBService service, ILogger<TransactionServices> logger, UserCreds creds)
+        private readonly IDataProtector protector;
+        public TransactionServices(MongoDBService service, ILogger<TransactionServices> logger, UserCreds creds, IDataProtectionProvider provider, IConfiguration config)
         {
             users = service.Database.GetCollection<Users>("users");
             this.logger = logger;   
             this.creds = creds;
+            protector = provider.CreateProtector(config["dataEncryption:key"]);
         }
 
         public async Task<IEnumerable<Transactions>> GetAllTransactions()
@@ -41,7 +44,7 @@ namespace MoneyMgtMongo.Services
                 {
                     AccountId = tranasction.accountId,
                     transactionTime = tranasction.transactionTime,
-                    amount = tranasction.amount,
+                    amount = protector.Protect(tranasction.amount.ToString())
                 };
                 trans.id = ObjectId.GenerateNewId().ToString();
                 var user = await users.Find(x => x.id == creds.userid).FirstOrDefaultAsync();
@@ -61,7 +64,7 @@ namespace MoneyMgtMongo.Services
                 {
                     if (trans.transactionType == 1)
                     {
-                        var newBank = user.bankBalance - trans.amount;
+                        var newBank = int.Parse(protector.Unprotect(user.bankBalance)) - int.Parse(protector.Unprotect(trans.amount));
                         if (newBank < 0)
                         {
                             logger.LogInformation("Low Bank Balance");
@@ -69,15 +72,15 @@ namespace MoneyMgtMongo.Services
                         }
                         var update = Builders<Users>.Update
                             .Push(x => x.transactiondetails, trans)
-                            .Set(x => x.bankBalance, newBank);
+                            .Set(x => x.bankBalance, protector.Protect(newBank.ToString()));
                         await users.UpdateOneAsync(x => x.id == creds.userid, update);
 
                     } else
                     {
-                        var newBank = user.bankBalance + trans.amount;
+                        var newBank = int.Parse(protector.Unprotect(user.bankBalance)) + int.Parse(protector.Unprotect(trans.amount));
                         var update = Builders<Users>.Update
                             .Push(x => x.transactiondetails, trans)
-                            .Set(x => x.bankBalance, newBank);
+                            .Set(x => x.bankBalance, protector.Protect(newBank.ToString()));
                         await users.UpdateOneAsync(x => x.id == creds.userid, update);
                     }
                 }
@@ -85,7 +88,7 @@ namespace MoneyMgtMongo.Services
                 {
                     if(trans.transactionType == 1)
                     {
-                        var newCash = user.cashBalance - trans.amount;
+                        var newCash = int.Parse(protector.Unprotect(user.cashBalance)) - int.Parse(protector.Unprotect(trans.amount));
                         if(newCash < 0)
                         {
                             logger.LogError("Low Cash Balance");
@@ -94,14 +97,14 @@ namespace MoneyMgtMongo.Services
 
                         var update = Builders<Users>.Update
                             .Push(x => x.transactiondetails, trans)
-                            .Set(x => x.cashBalance, newCash);
+                            .Set(x => x.cashBalance, protector.Protect(newCash.ToString()));
                         await users.UpdateOneAsync(x => x.id == creds.userid, update);
                     } else
                     {
-                        var newCash = user.cashBalance + trans.amount;
+                        var newCash = int.Parse(protector.Unprotect(user.cashBalance)) + int.Parse(protector.Unprotect(trans.amount));
                         var update = Builders<Users>.Update
                             .Push(x => x.transactiondetails, trans)
-                            .Set(x => x.cashBalance, newCash);
+                            .Set(x => x.cashBalance, protector.Protect(newCash.ToString()));
                         await users.UpdateOneAsync(x => x.id == creds.userid, update);
                     }
                 }
@@ -111,6 +114,31 @@ namespace MoneyMgtMongo.Services
             {
                 logger.LogError(e.Message);
                 return false;
+            }
+        }
+
+        public async Task<BalanceDto> GetBalances()
+        {
+            try
+            {
+                var filter = Builders<Users>.Filter.Eq(x => x.id, creds.userid);
+                var user = await users.Find(filter).FirstOrDefaultAsync();
+                if(user == null)
+                {
+                    logger.LogError("user not found");
+                    return null;
+                }
+                BalanceDto balance = new BalanceDto
+                {
+                    cashBalance = int.Parse(protector.Unprotect(user.cashBalance)),
+                    bankBalance = int.Parse(protector.Unprotect(user.bankBalance))
+                };
+                return balance;
+            }
+            catch(Exception e)
+            {
+                logger.LogError(e.Message);
+                return null;
             }
         }
     }

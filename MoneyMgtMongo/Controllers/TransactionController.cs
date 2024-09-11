@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyMgtMongo.Interfaces;
 using MoneyMgtMongo.Models;
-using System.Transactions;
 
 namespace MoneyMgtMongo.Controllers
 {
@@ -39,6 +37,18 @@ namespace MoneyMgtMongo.Controllers
                 return Ok("Transaction Recorded");
             }
             return BadRequest("Something went wrong");
+        }
+
+        [HttpGet("get_balances")]
+        [Authorize]
+        public async Task<IActionResult> GetAllBalances()
+        {
+            var response = await services.GetBalances();
+            if(response == null)
+            {
+                return BadRequest("something went wrong");
+            }
+            return Ok(response);
         }
     }
 }

@@ -6,5 +6,6 @@ namespace MoneyMgtMongo.Interfaces
     {
         Task<IEnumerable<Transactions>> GetAllTransactions();
         Task<bool> AddNewTransaction(TransactionDto tranasction, bool isBank);
+        Task<BalanceDto> GetBalances();
     }
 }

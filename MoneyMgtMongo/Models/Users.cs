@@ -17,9 +17,9 @@ namespace MoneyMgtMongo.Models
         public List<Accounts>? customAccounts { get; set; }
         [BsonElement("transactiondetails")]
         public List<Transactions>? transactiondetails { get; set; }
-        [BsonElement("cashBalance"), BsonRepresentation(MongoDB.Bson.BsonType.Int32)]
-        public int? cashBalance { get; set; }
-        [BsonElement("bankBalance"), BsonRepresentation(MongoDB.Bson.BsonType.Int32)]
-        public int? bankBalance { get; set; }
+        [BsonElement("cashBalance"), BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        public string? cashBalance { get; set; }
+        [BsonElement("bankBalance"), BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        public string? bankBalance { get; set; }
     }
 }

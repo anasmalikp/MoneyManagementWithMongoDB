@@ -11,8 +11,8 @@ namespace MoneyMgtMongo.Models
         public string? AccountId { get; set; }
         [BsonElement("transactionTime"), BsonRepresentation(MongoDB.Bson.BsonType.DateTime)]
         public DateTime? transactionTime { get; set; }
-        [BsonElement("amount"), BsonRepresentation(MongoDB.Bson.BsonType.Int32)]
-        public int? amount { get; set; }
+        [BsonElement("amount"), BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        public string? amount { get; set; }
         [BsonElement("transactionType"), BsonRepresentation(MongoDB.Bson.BsonType.Int32)]
         public int? transactionType { get; set; }
     }

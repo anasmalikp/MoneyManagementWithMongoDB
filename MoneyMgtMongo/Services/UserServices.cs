@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.IdentityModel.Tokens;
 using MoneyMgtMongo.DB;
 using MoneyMgtMongo.Encryption;
 using MoneyMgtMongo.Interfaces;
@@ -15,11 +16,13 @@ namespace MoneyMgtMongo.Services
         private readonly IMongoCollection<Users> users;
         private readonly IConfiguration config;
         private readonly ILogger<UserServices> logger;
-        public UserServices(MongoDBService service, IConfiguration config, ILogger<UserServices> logger)
+        private readonly IDataProtector protector;
+        public UserServices(MongoDBService service, IConfiguration config, ILogger<UserServices> logger, IDataProtectionProvider provider)
         {
             users = service.Database?.GetCollection<Users>("users");
             this.config = config;
             this.logger = logger;
+            protector = provider.CreateProtector(config["dataEncryption:key"]);
         }
 
         public async Task<bool> Register(RegisterDto register)
@@ -39,8 +42,9 @@ namespace MoneyMgtMongo.Services
                     return false;
                 }
                 user.Password = PasswordHasher.HashPassword(user.Password);
-                user.cashBalance = 0;
-                user.bankBalance = 0;
+                var zero = protector.Protect(0.ToString());
+                user.cashBalance = zero;
+                user.bankBalance = zero;
                 user.customAccounts = new List<Accounts>();
                 user.transactiondetails = new List<Transactions>();
 
