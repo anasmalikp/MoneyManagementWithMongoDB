@@ -18,7 +18,7 @@ RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
 WORKDIR /app
 
-ENV MONGO_CONNECTION_STRING = "mongodb+srv://anasmalikp:hOmuncaYls7vJVF3@cluster0.of4g1.mongodb.net/MoneyDB\?retryWrites=true\&w=majority\&appName=Cluster0\&tls=true"
+ENV MONGO_CONNECTION_STRING = "mongodb+srv://anasmalikp:hOmuncaYls7vJVF3@cluster0.of4g1.mongodb.net/MoneyDB?retryWrites=true&w=majority&appName=Cluster0&tls=true"
 ENV JWT_SECRET = "thisisajwtsecuritykeyforauthenticationandauthorization"
 
 # Install OpenSSL and CA Certificates
