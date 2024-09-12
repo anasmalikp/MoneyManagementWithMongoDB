@@ -21,7 +21,8 @@ WORKDIR /app
 # Install OpenSSL and CA Certificates
 RUN apk add --no-cache openssl \
     && apk add --no-cache ca-certificates \
-    && update-ca-certificates
+    && update-ca-certificates \
+    && openssl version
 
 # Copy the built app from the build stage
 COPY --from=build /app .
