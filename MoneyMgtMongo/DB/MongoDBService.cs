@@ -9,7 +9,7 @@ namespace MoneyMgtMongo.DB
         public MongoDBService(IConfiguration config)
         {
             this.config = config;
-            var connection = config.GetConnectionString("DefaultConnection");
+            var connection = config["MONGO_CONNECTION_STRING"];
             var mongoUrl = MongoUrl.Create(connection);
             var mongoClient = new MongoClient(mongoUrl);
             database = mongoClient.GetDatabase(mongoUrl.DatabaseName);
