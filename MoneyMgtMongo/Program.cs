@@ -27,7 +27,7 @@ o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 {
 o.TokenValidationParameters = new TokenValidationParameters
 {
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwt:key"])),
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT_SECRET"])),
     ValidateAudience = false,
     ValidateIssuer = false,
     ValidateIssuerSigningKey = true,
