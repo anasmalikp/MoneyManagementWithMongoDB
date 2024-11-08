@@ -27,7 +27,7 @@ o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 {
 o.TokenValidationParameters = new TokenValidationParameters
 {
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT_SECRET"])),
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwt:key"])),
     ValidateAudience = false,
     ValidateIssuer = false,
     ValidateIssuerSigningKey = true,
@@ -40,6 +40,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDataProtection();
 
+builder.Services.AddAuthorization();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactPolicy", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,6 +61,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 /*app.UseHttpsRedirection();*/
+app.UseCors("ReactPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<GetUserid>();
