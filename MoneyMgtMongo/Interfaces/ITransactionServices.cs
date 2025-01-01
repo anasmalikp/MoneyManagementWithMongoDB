@@ -4,8 +4,8 @@ namespace MoneyMgtMongo.Interfaces
 {
     public interface ITransactionServices
     {
-        Task<IEnumerable<Transactions>> GetAllTransactions();
-        Task<bool> AddNewTransaction(TransactionDto tranasction, bool isBank);
+        Task<ApiResponse<List<HistoryDto>>> GetAllTransactions();
+        Task<ApiResponse<bool>> AddNewTransaction(TransactionDto tranasction, bool isBank);
         Task<BalanceDto> GetBalances();
     }
 }

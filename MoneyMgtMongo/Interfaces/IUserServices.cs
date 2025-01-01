@@ -4,7 +4,7 @@ namespace MoneyMgtMongo.Interfaces
 {
     public interface IUserServices
     {
-        Task<bool> Register(RegisterDto register);
-        Task<string> Login(LoginDto creds);
+        Task<ApiResponse<bool>> Register(RegisterDto register);
+        Task<LoginResponse> Login(LoginDto creds);
     }
 }

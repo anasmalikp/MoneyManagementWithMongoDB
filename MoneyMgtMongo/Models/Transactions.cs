@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MoneyMgtMongo.Models
 {
@@ -15,5 +16,7 @@ namespace MoneyMgtMongo.Models
         public string? amount { get; set; }
         [BsonElement("transactionType"), BsonRepresentation(MongoDB.Bson.BsonType.Int32)]
         public int? transactionType { get; set; }
+        [BsonElement("isBank"), BsonRepresentation(MongoDB.Bson.BsonType.Boolean)]
+        public bool isBank { get; set; }
     }
 }

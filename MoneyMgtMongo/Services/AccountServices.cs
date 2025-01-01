@@ -18,7 +18,7 @@ namespace MoneyMgtMongo.Services
             this.logger = logger;
         }
 
-        public async Task<bool> AddNewAccount(Accounts acc)
+        public async Task<ApiResponse<bool>> AddNewAccount(Accounts acc)
         {
             try
             {
@@ -28,19 +28,38 @@ namespace MoneyMgtMongo.Services
                     .Push(x => x.customAccounts, acc);
                await users.UpdateOneAsync(filter, update);
 
-                return true;
+                return new ApiResponse<bool>
+                {
+                    statusCode = 201,
+                    message = "Account Added Succeddfully",
+                    data = true
+                };
             }catch(Exception ex)
             {
                 logger.LogError(ex.Message);
-                return false;
+                return new ApiResponse<bool>
+                {
+                    statusCode = 500,
+                    message = "Internal Server Error",
+                    data = false
+                };
             }
         }
 
-        public async Task<IEnumerable<Accounts>> GetAllAccounts()
+        public async Task<ApiResponse<List<Accounts>>> GetAllAccounts(int catId)
         {
-            var filter = Builders<Users>.Filter.Eq(x => x.id, creds.userid);
+            var filter = Builders<Users>.Filter.And(
+                Builders<Users>.Filter.Eq(x => x.id, creds.userid),
+                Builders<Users>.Filter.ElemMatch(x => x.customAccounts, accounts => accounts.TransactionType == catId)
+            );
             var user = await users.Find(filter).FirstOrDefaultAsync();
-            return user.customAccounts;
+            var accounts =  user?.customAccounts.Where(accounts => accounts.TransactionType == catId).ToList();
+            return new ApiResponse<List<Accounts>>
+            {
+                statusCode = 200,
+                message = "Accounts Fetched Successfully",
+                data = accounts
+            };
         }
     }
 }

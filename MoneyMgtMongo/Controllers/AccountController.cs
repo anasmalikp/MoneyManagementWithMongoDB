@@ -20,23 +20,15 @@ namespace MoneyMgtMongo.Controllers
         public async Task<IActionResult> NewAccount(Accounts acc)
         {
             var result = await services.AddNewAccount(acc);
-            if (result)
-            {
-                return Ok("Account Added");
-            }
-            return BadRequest("Something went wrong");
+            return Ok("Account Added");
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> AllAccounts()
+        public async Task<IActionResult> AllAccounts(int catId)
         {
-            var response = await services.GetAllAccounts();
-            if(response != null)
-            {
-                return Ok(response);
-            }
-            return BadRequest("Something went wrong");
+            var response = await services.GetAllAccounts(catId);
+            return Ok(response);
         }
     }
 }

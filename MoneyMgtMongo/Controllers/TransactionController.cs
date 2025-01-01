@@ -20,10 +20,6 @@ namespace MoneyMgtMongo.Controllers
         public async Task<IActionResult> GetTransactions()
         {
             var response = await services.GetAllTransactions();
-            if(response == null)
-            {
-                return NotFound();
-            }
             return Ok(response);
         }
 
@@ -32,11 +28,7 @@ namespace MoneyMgtMongo.Controllers
         public async Task<IActionResult> AddTransaction(TransactionDto trans, bool isBank)
         {
             var response = await services.AddNewTransaction(trans, isBank);
-            if (response)
-            {
-                return Ok("Transaction Recorded");
-            }
-            return BadRequest("Something went wrong");
+            return Ok(response);
         }
 
         [HttpGet("get_balances")]

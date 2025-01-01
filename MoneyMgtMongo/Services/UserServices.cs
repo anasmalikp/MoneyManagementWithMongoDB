@@ -22,10 +22,10 @@ namespace MoneyMgtMongo.Services
             users = service.Database?.GetCollection<Users>("users");
             this.config = config;
             this.logger = logger;
-            protector = provider.CreateProtector(config["dataEncryption:key"]);
+            protector = provider.CreateProtector(Environment.GetEnvironmentVariable("enc_key"));
         }
 
-        public async Task<bool> Register(RegisterDto register)
+        public async Task<ApiResponse<bool>> Register(RegisterDto register)
         {
             try
             {
@@ -39,7 +39,12 @@ namespace MoneyMgtMongo.Services
                 var existingUser = await users.Find(filter).FirstOrDefaultAsync();
                 if(existingUser != null)
                 {
-                    return false;
+                    return new ApiResponse<bool>
+                    {
+                        statusCode = 400,
+                        message = "Email already registered. Please Login",
+                        data = false
+                    };
                 }
                 user.Password = PasswordHasher.HashPassword(user.Password);
                 var zero = protector.Protect(0.ToString());
@@ -49,15 +54,25 @@ namespace MoneyMgtMongo.Services
                 user.transactiondetails = new List<Transactions>();
 
                 await users.InsertOneAsync(user);
-                return true;
+                return new ApiResponse<bool>
+                {
+                    statusCode = 201,
+                    message = "User Registered Successfully",
+                    data = true
+                };
             }
             catch(Exception ex)
             {
-                return false;
+                return new ApiResponse<bool>
+                {
+                    statusCode = 500,
+                    message = ex.Message,
+                    data = false
+                };
             }
         }
 
-        public async Task<string> Login(LoginDto creds)
+        public async Task<LoginResponse> Login(LoginDto creds)
         {
             try
             {
@@ -67,20 +82,37 @@ namespace MoneyMgtMongo.Services
                 if(isExist == null)
                 {
                     logger.LogError("Email not found. please Register first");
-                    return null;
+                    return new LoginResponse
+                    {
+                        statusCode = 400,
+                        message = "Email not found. Please Register first"
+                    };
                 }
                 var isVerified = PasswordHasher.VerifyPassword(isExist.Password, creds.password);
                 if(isVerified)
                 {
-                    return GetToken(isExist);
+                    var token = GetToken(isExist);
+                    return new LoginResponse
+                    {
+                        token = token,
+                        username = isExist.username!
+                    };
                 }
                 logger.LogError("wrong password entered");
-                return null;
+                return new LoginResponse
+                {
+                    statusCode = 400,
+                    message = "Wrong Password"
+                };
             }
             catch (Exception ex)
             {
                 logger.LogError(ex.Message);
-                return null;
+                return new LoginResponse
+                {
+                    statusCode = 500,
+                    message = ex.Message
+                };
             }
         }
 

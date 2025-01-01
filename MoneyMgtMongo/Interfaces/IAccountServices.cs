@@ -4,7 +4,7 @@ namespace MoneyMgtMongo.Interfaces
 {
     public interface IAccountServices
     {
-        Task<bool> AddNewAccount(Accounts acc);
-        Task<IEnumerable<Accounts>> GetAllAccounts();
+        Task<ApiResponse<bool>> AddNewAccount(Accounts acc);
+        Task<ApiResponse<List<Accounts>>> GetAllAccounts(int catId);
     }
 }
